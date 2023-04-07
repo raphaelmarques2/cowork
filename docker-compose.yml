@@ -1,0 +1,50 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:13-alpine
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: user
+      POSTGRES_USER: user
+      POSTGRES_DB: db
+    volumes:
+      - cowork-postgres-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg-isready -U postgres"]
+      interval: 10s
+      timeout: 2s
+      retries: 3
+    networks:
+      - cowork
+  auth:
+    image: raphaelmarques84/cowork-auth
+    build: ./auth
+    ports:
+      - 3000:3000
+    environment:
+      - DATABASE_URL=postgresql://user:user@db:5432/db?schema=auth
+      - JWT_SECRET=abcdefg
+    depends_on:
+      - db
+    networks:
+      - cowork
+  spots:
+    image: raphaelmarques84/cowork-spots
+    build: ./spots
+    ports:
+      - 3001:3000
+    environment:
+      - DATABASE_URL=postgresql://user:user@db:5432/db?schema=spots
+      - JWT_SECRET=abcdefg
+    depends_on:
+      - db
+    networks:
+      - cowork
+    
+
+volumes:
+  cowork-postgres-db:
+networks:
+  cowork:
