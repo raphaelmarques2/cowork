@@ -22,7 +22,7 @@ services:
     image: raphaelmarques84/cowork-auth
     build: ./auth
     ports:
-      - 3000:3000
+      - 3001:3000
     environment:
       - DATABASE_URL=postgresql://user:user@db:5432/db?schema=auth
       - JWT_SECRET=abcdefg
@@ -34,7 +34,7 @@ services:
     image: raphaelmarques84/cowork-spots
     build: ./spots
     ports:
-      - 3001:3000
+      - 3002:3000
     environment:
       - DATABASE_URL=postgresql://user:user@db:5432/db?schema=spots
       - JWT_SECRET=abcdefg
